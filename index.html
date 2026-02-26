@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Твой Курс - Вход в чат-бот</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="max-w-md w-full text-center space-y-6">
+        <h1 class="text-4xl font-bold tracking-tight">Стань профи в <span class="text-blue-500">ЛЮБОЙ НИШЕ</span></h1>
+        <p class="text-gray-400">Нажми на кнопку ниже, чтобы запустить обучение в Telegram и получить первый урок бесплатно.</p>
+        
+        <a id="tg-button" href="https://t.me/otido_test_bot" 
+           class="inline-block w-full py-4 px-8 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-blue-500/20 text-center">
+            ПЕРЕЙТИ В TELEGRAM
+        </a>
+    </div>
+
+    <script>
+        // Функция для парсинга UTM и обновления ссылки
+        function setupTgLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Извлекаем метки (или ставим 'direct' по умолчанию)
+            const utm = {
+                source: urlParams.get('utm_source') || 'direct',
+                medium: urlParams.get('utm_medium') || 'none',
+                campaign: urlParams.get('utm_campaign') || 'none'
+            };
+
+            // Сохраняем в localStorage (на всякий случай)
+            localStorage.setItem('user_utm', JSON.stringify(utm));
+
+            // Формируем строку: source|medium|campaign
+            const rawString = `${utm.source}|${utm.medium}|${utm.campaign}`;
+            
+            // Кодируем в Base64 для Telegram Deep Linking
+            const encodedData = btoa(rawString).replace(/=/g, ""); // Убираем символы '=', ТГ их не любит
+
+            // Находим кнопку и меняем ссылку
+            const tgButton = document.getElementById('tg-button');
+            const botUsername = 'ТВОЙ_БОТ_USERNAME'; // ЗАМЕНИ НА СВОЙ @username (без собаки)
+            
+            tgButton.href = `https://t.me/${botUsername}?start=${encodedData}`;
+            
+            console.log("UTM упакованы в ссылку:", rawString);
+        }
+
+        // Запуск при загрузке страницы
+        window.onload = setupTgLink;
+    </script>
+</body>
+</html>
